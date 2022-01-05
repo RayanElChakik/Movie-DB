@@ -60,9 +60,9 @@ app.get('/search',(req,res) =>{
 
 
 // Creating a movies/creat or movies/add route
-app.get('/movies/add',(req,res)=>{
-    res.send('Movie Creat')
-})
+// app.get('/movies/add',(req,res)=>{
+//     res.send('Movie Creat')
+// })
 
 // Creating a movies/read or movies/get route
 app.get('/movies/read',(req,res)=>{
@@ -97,24 +97,44 @@ app.get('/movies/read/by-title' , (req, res) => {
 })
 
 // // Route creation for reading an ID 
-// app.get('/movies/read/id/:ID',(req,res) =>{
-//     if(req.params.ID >=0 && req.params.ID < movies.length){
-//         res.json({status:200, data:movies[req.params.ID]})
-//     }else{
-//         res.status(404).json({status:404, error:true , message:`The movie ${req.params.ID} does not exist.`})
-//     }
-//     })
-// Route creation for reading an movie title 
 app.get('/movies/read/id/:ID',(req,res) =>{
-    const result = movies.find( ({ title }) => title === req.params.ID );
-    let indexID = movies.findIndex(id => id.title === req.params.ID)
-    if(indexID >=0 && indexID < movies.length){
-    res.json({status:200, data:result})
-    // return
+    if(req.params.ID >=0 && req.params.ID < movies.length){
+        res.json({status:200, data:movies[req.params.ID]})
     }else{
-    res.status(404).json({status:404, error:true , message:`The movie ${req.params.ID} does not exist.`})
+        res.status(404).json({status:404, error:true , message:`The movie ${req.params.ID} does not exist.`})
     }
     })
+// Route creation for reading an movie title 
+// app.get('/movies/read/id/:ID',(req,res) =>{
+//     const result = movies.find( ({ title }) => title === req.params.ID );
+//     let indexID = movies.findIndex(id => id.title === req.params.ID)
+//     if(indexID >=0 && indexID < movies.length){
+//     res.json({status:200, data:result})
+//     // return
+//     }else{
+//     res.status(404).json({status:404, error:true , message:`The movie ${req.params.ID} does not exist.`})
+//     }
+//     })
 
+
+// Route creation for creating a new object 
+app.get('/movies/add',(req,res) =>{
+    let title = req.query.title;
+    let year = req.query.year;
+    let rating = req.query.rating;
+    if(!isNaN(year) && year.length===4 && year && title){
+        if(rating){
+        movies.push({title:title, year:year, rating:rating})
+        res.status(200).json({status:200, message:'Ok', data:movies})
+        console.log(year.length);
+        }else{
+            rating = 4;
+            movies.push({title:title, year:year, rating:rating})
+            res.status(200).json({status:200, message:'Ok', data:movies})
+        }
+    }else{
+        res.status(403).json({status:403, error:true, message:"You cannot create a movie without providing a title and an appropriate year"})
+    }
+})
 // Sever Creation that listens to port= 3000
 app.listen(3000)
