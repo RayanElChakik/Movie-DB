@@ -118,7 +118,7 @@ app.get('/movies/read/id/:ID',(req,res) =>{
 
 
 // Route creation for creating a new object 
-app.get('/movies/add',(req,res) =>{
+app.post('/movies/add',(req,res) =>{
     let title = req.query.title;
     let year = req.query.year;
     let rating = req.query.rating;
@@ -138,7 +138,7 @@ app.get('/movies/add',(req,res) =>{
 })
 
 // Creating a movies/delete route
-app.get('/movies/delete/:ID',(req,res)=>{
+app.delete('/movies/delete/:ID',(req,res)=>{
     let indexID = req.params.ID
     if(indexID >=0 && indexID < movies.length){
         movies.splice(indexID,1)
@@ -150,7 +150,7 @@ app.get('/movies/delete/:ID',(req,res)=>{
 })
 
 // Creating a route to update an item from the list 
-app.get('/movies/update/:ID',(req,res)=>{
+app.put('/movies/update/:ID',(req,res)=>{
     let indexID = req.params.ID
     let title = req.query.title
     let year = req.query.year
