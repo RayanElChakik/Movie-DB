@@ -96,6 +96,14 @@ app.get('/movies/read/by-title' , (req, res) => {
     res.send({status:200, data: movies.sort((oldChar,newChar) => oldChar.title.localeCompare(newChar.title))})
 })
 
+// Route creation for reading an ID 
+app.get('/movies/read/id/:ID',(req,res) =>{
+    if(req.params.ID >=0 && req.params.ID < movies.length){
+        res.json({status:200, data:movies[req.params.ID]})
+    }else{
+        res.status(404).json({status:404, error:true , message:`The movie ${req.params.ID} does not exist.`})
+    }
+    })
 
 
 // Sever Creation that listens to port= 3000
