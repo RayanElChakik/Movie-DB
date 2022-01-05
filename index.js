@@ -136,5 +136,19 @@ app.get('/movies/add',(req,res) =>{
         res.status(403).json({status:403, error:true, message:"You cannot create a movie without providing a title and an appropriate year"})
     }
 })
+
+// Creating a movies/delete route
+app.get('/movies/delete/:ID',(req,res)=>{
+    let indexID = req.params.ID
+    if(indexID >=0 && indexID < movies.length){
+        movies.splice(indexID,1)
+        res.status(200).json({status:200, message:'Ok', data:movies})
+        return
+    }else{
+        res.status(404).json({status:404, error:true, message:`The movie ${req.params.ID} does not exist`})
+    }
+})
+
+
 // Sever Creation that listens to port= 3000
 app.listen(3000)
