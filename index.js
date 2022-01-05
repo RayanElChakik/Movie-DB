@@ -81,5 +81,22 @@ app.get('/movies/delete',(req,res)=>{
 })
 
 
+// Route creation for sorting the list by Years
+app.get('/movies/read/by-date',(req,res)=>{
+    res.json({status:200 , data: movies.sort((oldYear, newYear) => newYear.year - oldYear.year)})
+})
+
+// Route creation for sorting the list by Highest Rating
+app.get('/movies/read/by-rating' , (req, res) => {
+    res.send({status:200, data: movies.sort((lowRate,highRate) => highRate.rating - lowRate.rating)})
+})
+
+// Route creation for sorting the list by its Title
+app.get('/movies/read/by-title' , (req, res) => {
+    res.send({status:200, data: movies.sort((oldChar,newChar) => oldChar.title.localeCompare(newChar.title))})
+})
+
+
+
 // Sever Creation that listens to port= 3000
 app.listen(3000)
