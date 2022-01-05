@@ -149,6 +149,29 @@ app.get('/movies/delete/:ID',(req,res)=>{
     }
 })
 
+// Creating a route to update an item from the list 
+app.get('/movies/update/:ID',(req,res)=>{
+    let indexID = req.params.ID
+    let title = req.query.title
+    let year = req.query.year
+    let rating = req.query.rating
+    if(indexID >=0 && indexID < movies.length){
+        if(title && title !== undefined){
+            movies[indexID].title = title;
+        }
+        if(rating && !isNaN(rating)){
+            movies[indexID].rating = rating
+        }
+        if(year && !isNaN(year) && year.length === 4){
+            movies[indexID].year = year;
+        }
+        res.status(200).json({status:200, message:'Ok', data:movies})
+            return
+        }else{
+        res.status(404).json({status:404, error:true, message:`The movie ${req.params.ID} does not exist`})
+    }
+})
+
 
 // Sever Creation that listens to port= 3000
 app.listen(3000)
