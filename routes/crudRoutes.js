@@ -4,6 +4,7 @@ const bodyParser = require ('body-parser')
 const mongoose = require('mongoose')
 
 const movies = require('../models/MovieList');
+const { update } = require('../models/MovieList');
 
 // Creating a movies/read or movies/get route
 router.get('/read',(req,res)=>{
@@ -77,6 +78,7 @@ router.post('/add',(req,res) =>{
     } else res.status(403).send({ status: 403, error: true, message: 'you cannot create a movie without providing a title and a year' });
 })
 
+//Router Creation for deleting movies by id
 router.delete("/delete/:id", (req, res) => {
     movies.findByIdAndDelete(req.params.id).then(deletedMovie => {
         movies.find().then(moviesData => {
@@ -96,23 +98,26 @@ router.put('/update/:ID',(req,res)=>{
     let year = req.query.year
     let rating = req.query.rating
     movies.findById(fetchedID).then((updatedMovie) => {
+        const updateFunction = () =>{
+            updatedMovie.save()
+            movies.find().then(moviesData => {
+                res.json({ status: 200, data: moviesData });
+            }).catch(err => {
+                console.log("error, no entry find")
+            })
+        }
         if (title && title !== undefined){
             updatedMovie.title = title
-        }
-        if (rating && !isNaN(rating)){
+            updateFunction()
+        } else if (rating && !isNaN(rating)){
             updatedMovie.rating =rating
-        } 
-        if (year && !isNaN(year) && year.length === 4){
-            updatedMovie.year = req.query.year
+            updateFunction()
+        } else if (year && !isNaN(year) && year.length === 4){
+            updatedMovie.year = year
+            updateFunction()
+        } else{
+            res.status(404).json({ status: 404, error: true, message: `the movie '${req.params.ID}' does not exist` })
         }
-        updatedMovie.save()
-        movies.find().then(moviesData => {
-            res.json({ status: 200, data: moviesData });
-        }).catch(err => {
-            console.log("error, no entry find")
-        })
-    }).catch(err => {
-        res.status(404).json({ status: 404, error: true, message: `the movie '${req.params.id}' does not exist` })
     })
 })
 

@@ -4,13 +4,14 @@ const crudRoutes = require('./routes/crudRoutes')
 const oldRoutes = require('./routes/oldRoutes')
 require('dotenv/config')
 const mongoose = require('mongoose');
+const users = require('./routes/userRouters')
 
 // Midleware Creation
 app.use(express.json());
 app.use('/movies',crudRoutes)
 // To use the old routes add /add before the rest of the route tags
 app.use('/app',oldRoutes)
-
+app.use('/user',users)
 
 //connection
 mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
