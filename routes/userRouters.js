@@ -15,7 +15,7 @@ const jwt = require('jsonwebtoken')
 //             "userName": "movies-2000",
 //             "password": "movies222",
 // User 3:     "name": Codi
-//             "userName": "codi-user",
+//             "userName": "codi-users",
 //             "password": "coditasks",
 
 // User Route Succesfful Entry Message
@@ -40,7 +40,7 @@ users.get('/read/by-userName' , (req, res) => {
     })
 })
 
-// // Route creation for sorting the list by Users
+// Route creation for sorting the list by Users
 users.get('/read/by-user',(req,res)=>{
     user.find()
     .then(searchData => {
@@ -50,7 +50,7 @@ users.get('/read/by-user',(req,res)=>{
     })
 })
 
-// // Route creation for adding users
+// Route creation for adding users
 users.post('/add',(req,res) =>{
     let userName = req.query.userName;
     let password = req.query.password;
@@ -60,13 +60,13 @@ users.post('/add',(req,res) =>{
     if(error){
         return res.status(403).send({ status: 403, error: true, message: 'you cannot create an account without a userName and a password' });
     } else{
-        // User Creation 
+        // User Creation with crypted password
         const salt = bcrypt.genSaltSync(10);
         const hashPassword = bcrypt.hashSync(password,salt);
         user.create({
             name: name,
             userName: userName,
-            password: hashPassword
+            password: password
         }
         ).then(() => {
             user.find()
@@ -87,13 +87,14 @@ users.post('/login', async (req,res) =>{
     if(!fetchedUser) return res.status(403).send({ status: 403, error: true, message: 'Invalid userName please enter a valid one!' });
     console.log(fetchedUser.password)
     console.log(req.query.password)
-    if(req.query.password !== fetchedUser.password) return res.status(403).send({ status: 403, error: true, message: 'Invalid password please enter a valid one!' });
+    const validPass = bcrypt.compare(req.query.password,fetchedUser.password)
+    if(!validPass) return res.status(403).send({ status: 403, error: true, message: 'Invalid password please enter a valid one!' });
     // Creating and assigning a token
     const token = jwt.sign({_id: fetchedUser._id},process.env.TOKEN_SCERET)
     res.header('auth-token',token).json({token: token, message: 'Congrats! You have successfully logged in!'})
 })
 
-// //Router Creation for deleting movies by id
+// Router Creation for deleting movies by id
 users.delete("/delete/:id", (req, res) => {
     user.findByIdAndDelete(req.params.id).then(()=> {
         user.find().then(userData => {
@@ -106,7 +107,7 @@ users.delete("/delete/:id", (req, res) => {
     })
 });
 
-// // // Creating a route to update an item from the list 
+// Creating a route to update an item from the list 
 users.put('/update/:ID',(req,res)=>{
     let fetchedID = req.params.ID
     let userName = req.query.userName
