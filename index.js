@@ -1,12 +1,14 @@
 const express = require('express')
 const app = express()
-const crudRoutes = require('./routes/crudRoutes')
-const oldRoutes = require('./routes/oldRoutes')
 require('dotenv/config')
 const mongoose = require('mongoose');
+
+// Importing routes 
+const crudRoutes = require('./routes/crudRoutes')
+const oldRoutes = require('./routes/oldRoutes')
 const users = require('./routes/userRouters')
 
-// Midleware Creation
+// Middleware Creation
 app.use(express.json());
 app.use('/movies',crudRoutes)
 // To use the old routes add /add before the rest of the route tags

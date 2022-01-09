@@ -1,7 +1,7 @@
 const express = require ('express')
 const router = express.Router()
-const bodyParser = require ('body-parser')
-const mongoose = require('mongoose')
+const auth = require('./userVerify')
+
 
 const movies = require('../models/MovieList');
 const { update } = require('../models/MovieList');
@@ -55,7 +55,7 @@ router.get('/read/id/:ID',(req,res) => {
 })
 
 // // Route creation for creating a new object 
-router.post('/add',(req,res) =>{
+router.post('/add',auth,(req,res) =>{
     let title = req.query.title;
     let year = req.query.year;
     let rating = req.query.rating;
@@ -79,7 +79,7 @@ router.post('/add',(req,res) =>{
 })
 
 //Router Creation for deleting movies by id
-router.delete("/delete/:id", (req, res) => {
+router.delete("/delete/:id", auth, (req, res) => {
     movies.findByIdAndDelete(req.params.id).then(deletedMovie => {
         movies.find().then(moviesData => {
             res.send({ status: 200, data: moviesData });
@@ -92,7 +92,7 @@ router.delete("/delete/:id", (req, res) => {
 });
 
 // // Creating a route to update an item from the list 
-router.put('/update/:ID',(req,res)=>{
+router.put('/update/:ID',auth,(req,res)=>{
     let fetchedID = req.params.ID
     let title = req.query.title
     let year = req.query.year
